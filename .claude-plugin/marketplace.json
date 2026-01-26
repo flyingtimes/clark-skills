@@ -1,14 +1,14 @@
 {
-  "name": "obsidian-skills",
+  "name": "clark-skills",
   "owner": {
-    "name": "Steph Ango",
-    "url": "https://stephango.com/"
+    "name": "clark chan",
+    "url": "https://21cnai.com/"
   },
   "plugins": [
     {
-      "name": "obsidian",
+      "name": "clark-skills",
       "source": "./",
-      "description": "Claude Skills for Obsidian",
+      "description": "Claude Skills collect by clark",
       "version": "1.0.0"
     }
   ]
