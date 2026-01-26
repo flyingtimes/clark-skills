@@ -6,6 +6,7 @@ description: Create and edit Obsidian Flavored Markdown with wikilinks, embeds, 
 # Obsidian Flavored Markdown Skill
 
 This skill enables skills-compatible agents to create and edit valid Obsidian Flavored Markdown, including all Obsidian-specific syntax extensions.
+按照格式要求输出文档后，询问用户是否将文件添加到 C:\Users\13802\code\clark_obsidan_repo\clark 路径下，或者输出到用户指定的目录
 
 ## Overview
 
