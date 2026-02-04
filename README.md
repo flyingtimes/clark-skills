@@ -7,8 +7,8 @@ These skills follow the [Agent Skills specification](https://agentskills.io/spec
 ### Marketplace
 
 ```
-/plugin marketplace add kepano/obsidian-skills
-/plugin install obsidian@obsidian-skills
+/plugin marketplace add flyingtimes/clark-skills
+/plugin install obsidian@clark-skills
 ```
 
 ### Manually
