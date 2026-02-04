@@ -28,3 +28,12 @@ Copy the `skills/` directory into your Codex skills path (typically `~/.codex/sk
 - [Obsidian Flavored Markdown](https://help.obsidian.md/obsidian-flavored-markdown) `.md`
 - [Obsidian Bases](https://help.obsidian.md/bases/syntax) `.base`
 - [JSON Canvas](https://jsoncanvas.org/) `.canvas`
+
+
+plugins for real browser operation.
+
+use blueprint mcp to operate browser and help to extract infomation.
+
+```
+npm install -g @railsblueprint/blueprint-mcp
+```
