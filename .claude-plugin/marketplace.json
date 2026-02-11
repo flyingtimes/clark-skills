@@ -6,7 +6,7 @@
   },
   "plugins": [
     {
-      "name": "obsidian",
+      "name": "clark",
       "source": "./",
       "description": "Claude Skills collect by clark",
       "version": "1.0.0"
