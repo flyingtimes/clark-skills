@@ -171,6 +171,9 @@ def main():
     if not auth_code and KEYRING_AVAILABLE:
         auth_code = keyring.get_password(KEYRING_SERVICE, 'auth_code')
 
+    smtp_server = None
+    smtp_port = None
+
     if KEYRING_AVAILABLE:
         smtp_server = keyring.get_password(KEYRING_SERVICE, 'smtp_server')
         smtp_port_str = keyring.get_password(KEYRING_SERVICE, 'smtp_port')
