@@ -23,11 +23,6 @@ class SmtpEmailClient:
 
     # 常见邮箱服务器的SMTP配置
     SMTP_SERVERS = {
-        'qq.com': ('smtp.qq.com', 465),
-        '163.com': ('smtp.163.com', 465),
-        '126.com': ('smtp.126.com', 465),
-        'gmail.com': ('smtp.gmail.com', 465),
-        'outlook.com': ('smtp.office365.com', 587),
         'chinamobile.com': ('smtp.chinamobile.com', 465),
         '139.com': ('smtp.139.com', 465),
     }
