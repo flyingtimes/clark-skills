@@ -15,11 +15,5 @@
     "canvas",
     "pkm",
     "notes"
-  ],
-  "skills": [
-    {
-      "name": "send-email",
-      "path": "skills/send-email/SKILL.md"
-    }
   ]
 }
