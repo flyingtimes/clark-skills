@@ -145,6 +145,8 @@ def main():
     parser.add_argument('content', nargs='?', help='邮件内容')
     parser.add_argument('--message', help='邮件内容（替代参数）')
     parser.add_argument('--to', help='收件人邮箱（默认发送给自己）')
+    parser.add_argument('--email', help='发件人邮箱地址')
+    parser.add_argument('--auth-code', help='SMTP授权码')
     args = parser.parse_args()
 
     # 获取邮件内容
@@ -154,30 +156,36 @@ def main():
         print("用法: python send_email.py \"邮件内容\"")
         sys.exit(1)
 
-    # 从 keyring 或环境变量读取配置
-    if KEYRING_AVAILABLE:
+    # 从 keyring 或环境变量读取配置（命令行参数优先）
+    email_address = args.email
+    auth_code = args.auth_code
+
+    # 如果通过命令行提供了凭据，保存到 keyring
+    if email_address and KEYRING_AVAILABLE:
+        keyring.set_password(KEYRING_SERVICE, 'email_address', email_address)
+    if not email_address and KEYRING_AVAILABLE:
         email_address = keyring.get_password(KEYRING_SERVICE, 'email_address')
+
+    if auth_code and KEYRING_AVAILABLE:
+        keyring.set_password(KEYRING_SERVICE, 'auth_code', auth_code)
+    if not auth_code and KEYRING_AVAILABLE:
         auth_code = keyring.get_password(KEYRING_SERVICE, 'auth_code')
+
+    if KEYRING_AVAILABLE:
         smtp_server = keyring.get_password(KEYRING_SERVICE, 'smtp_server')
         smtp_port_str = keyring.get_password(KEYRING_SERVICE, 'smtp_port')
-        smtp_port = int(smtp_port) if smtp_port_str else None
-    else:
-        # 降级到环境变量
-        if DOTENV_AVAILABLE:
-            load_dotenv()
-        email_address = os.getenv('EMAIL_ADDRESS')
-        auth_code = os.getenv('AUTH_CODE')
-        smtp_server = os.getenv('SMTP_SERVER')
-        smtp_port_str = os.getenv('SMTP_PORT')
         smtp_port = int(smtp_port) if smtp_port_str else None
 
     if not email_address or not auth_code:
         if KEYRING_AVAILABLE:
-            print("错误: 请先配置 keyring 凭据")
+            print("错误: 请先配置 keyring 凭据或使用命令行参数")
+            print(f"  命令行: python send_email.py \"内容\" --email your@email.com --auth-code YOUR_CODE")
             print(f"  设置命令: python -c \"import keyring; keyring.set_password('{KEYRING_SERVICE}', 'email_address', 'your@email.com')\"")
             print(f"              python -c \"import keyring; keyring.set_password('{KEYRING_SERVICE}', 'auth_code', 'your_auth_code')\"")
         else:
-            print("错误: 请在 .env 文件中配置 EMAIL_ADDRESS 和 AUTH_CODE")
+            print("错误: 请使用命令行参数或配置环境变量")
+            print(f"  命令行: python send_email.py \"内容\" --email your@email.com --auth-code YOUR_CODE")
+            print(f"  环境变量: EMAIL_ADDRESS 和 AUTH_CODE")
         sys.exit(1)
 
     # 创建客户端并发送
