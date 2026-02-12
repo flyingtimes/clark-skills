@@ -23,11 +23,20 @@ Copy the `skills/` directory into your Codex skills path (typically `~/.codex/sk
 
 ## Skills
 
-### Create and edit Obsidian-compatible plain text files
+### File Format Support
 
 - [Obsidian Flavored Markdown](https://help.obsidian.md/obsidian-flavored-markdown) `.md`
 - [Obsidian Bases](https://help.obsidian.md/bases/syntax) `.base`
 - [JSON Canvas](https://jsoncanvas.org/) `.canvas`
+
+### Implemented Skills
+
+- **send-email**: 给自己发送邮件
+- **email**: 邮件相关功能
+- **draw**: 绘图功能
+- **json-canvas**: JSON Canvas操作
+- **obsidian-bases**: Obsidian Bases操作
+- **obsidian-markdown**: Obsidian Markdown操作
 
 
 plugins for real browser operation.
