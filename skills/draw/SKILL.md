@@ -41,18 +41,59 @@ OUTPUT_DIR="${USER_DIR:-$PROJECT_ROOT/assets}"
 mkdir -p "$OUTPUT_DIR"
 ```
 
-### Step 2: Configure API Request
+### Step 2: Detect OS and Choose Script
 
-Choose the appropriate API based on user preference or available credentials.
+Detect the operating system and use the appropriate script:
 
-**Example:**
+```bash
+# Detect OS
+OS_TYPE=$(uname)
+
+if [[ "$OS_TYPE" == "Darwin" ]]; then
+    # macOS
+    SCRIPT="./scripts/drawimage.sh"
+elif [[ "$OS_TYPE" == "Linux" ]]; then
+    # Linux
+    SCRIPT="./scripts/drawimage.sh"
+else
+    # Windows (Git Bash, WSL, or native Windows)
+    # Try PowerShell first
+    SCRIPT="powershell -ExecutionPolicy Bypass -File ./scripts/drawimage.ps1"
+fi
+```
+
+### Step 3: Execute Image Generation
+
+**For macOS / Linux:**
+
+```bash
+./scripts/drawimage.sh "<prompt>" "<output-path>"
+```
+
+**For Windows:**
 
 ```powershell
-.\scripts\drawimage.ps1 "<用户给出的画面需求>" "<一个简洁的带输出路径的文件名>"
+.\scripts\drawimage.ps1 "<prompt>" "<output-path>"
 ```
 
-```commandLine
-powershell -ExecutionPolicy Bypass -File ".\scripts\drawimage.ps1" "<用户给出的画面需求>" "<一个简洁的带输出路径的文件名>"
+**Cross-platform command (works in Git Bash/WSL on Windows):**
+
+```bash
+if [[ "$(uname)" == "Darwin" ]] || [[ "$(uname)" == "Linux" ]]; then
+    ./scripts/drawimage.sh "$PROMPT" "$OUTPUT_FILE"
+else
+    powershell -ExecutionPolicy Bypass -File "./scripts/drawimage.ps1" "$PROMPT" "$OUTPUT_FILE"
+fi
 ```
+
+### Parameters
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `prompt` | Image description/text prompt | "a sunset over mountains" |
+| `output` | Output file path (with extension) | "output.jpg" |
+| `width` | Image width in pixels | 1024 |
+| `height` | Image height in pixels | 768 |
+| `model` | AI model to use | "x/z-image-turbo" |
 
 
