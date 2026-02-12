@@ -3,7 +3,9 @@
     "allow": [
       "Bash(powershell:*)",
       "Bash(ls:*)",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "Bash(git commit:*)",
+      "Bash(git add:*)"
     ]
   }
 }

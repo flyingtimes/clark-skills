@@ -139,6 +139,7 @@ def main():
     parser = argparse.ArgumentParser(description='给自己发送邮件')
     parser.add_argument('content', nargs='?', help='邮件内容')
     parser.add_argument('--message', help='邮件内容（替代参数）')
+    parser.add_argument('--to', help='收件人邮箱（默认发送给自己）')
     args = parser.parse_args()
 
     # 获取邮件内容
@@ -163,7 +164,8 @@ def main():
 
     # 创建客户端并发送
     client = SmtpEmailClient(email_address, auth_code, smtp_server, port)
-    success, message = client.send_email(content)
+    to_email = args.to if args.to else None
+    success, message = client.send_email(content, to_email)
 
     if success:
         print(f"[OK] {message}")
