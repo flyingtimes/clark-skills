@@ -14,36 +14,7 @@
     "bases",
     "canvas",
     "pkm",
-    "notes"
-  ],
-  "skills": [
-    {
-      "name": "draw",
-      "path": "skills/draw/SKILL.md"
-    },
-    {
-      "name": "email",
-      "path": "skills/email/SKILL.md"
-    },
-    {
-      "name": "email-helper",
-      "path": "skills/email-helper/SKILL.md"
-    },
-    {
-      "name": "send-email",
-      "path": "skills/send-email/SKILL.md"
-    },
-    {
-      "name": "json-canvas",
-      "path": "skills/json-canvas/SKILL.md"
-    },
-    {
-      "name": "obsidian-bases",
-      "path": "skills/obsidian-bases/SKILL.md"
-    },
-    {
-      "name": "obsidian-markdown",
-      "path": "skills/obsidian-markdown/SKILL.md"
-    }
+    "notes",
+    "email-helper"
   ]
 }
