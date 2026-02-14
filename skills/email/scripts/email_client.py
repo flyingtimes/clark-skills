@@ -9,14 +9,23 @@ import imaplib
 import email
 from email.header import decode_header
 from email.utils import parsedate_to_datetime
+from email import message as email_message
 import os
 from typing import List, Dict, Optional
+
+try:
+    import keyring
+    KEYRING_AVAILABLE = True
+except ImportError:
+    KEYRING_AVAILABLE = False
 
 try:
     from dotenv import load_dotenv
     DOTENV_AVAILABLE = True
 except ImportError:
     DOTENV_AVAILABLE = False
+
+KEYRING_SERVICE = "my-claude-skills"
 
 
 class ImapEmailClient:
@@ -91,6 +100,45 @@ class ImapEmailClient:
                 self.connected = False
                 print("[OK] 已断开连接")
 
+    @classmethod
+    def get_credentials(cls, email_address: str = None, auth_code: str = None) -> tuple:
+        """
+        从 keyring 或环境变量获取凭据
+
+        Args:
+            email_address: 邮箱地址（命令行参数）
+            auth_code: 授权码（命令行参数）
+
+        Returns:
+            (email_address, auth_code, imap_server, imap_port)
+        """
+        # 如果通过命令行提供了凭据，保存到 keyring
+        if email_address and KEYRING_AVAILABLE:
+            keyring.set_password(KEYRING_SERVICE, 'email_address', email_address)
+        if not email_address and KEYRING_AVAILABLE:
+            email_address = keyring.get_password(KEYRING_SERVICE, 'email_address')
+
+        if auth_code and KEYRING_AVAILABLE:
+            keyring.set_password(KEYRING_SERVICE, 'auth_code', auth_code)
+        if not auth_code and KEYRING_AVAILABLE:
+            auth_code = keyring.get_password(KEYRING_SERVICE, 'auth_code')
+
+        # 降级到环境变量
+        if not email_address:
+            email_address = os.getenv('EMAIL_ADDRESS')
+        if not auth_code:
+            auth_code = os.getenv('AUTH_CODE')
+
+        # 获取 IMAP 服务器配置
+        imap_server = None
+        imap_port = None
+        if KEYRING_AVAILABLE:
+            imap_server = keyring.get_password(KEYRING_SERVICE, 'imap_server')
+            imap_port_str = keyring.get_password(KEYRING_SERVICE, 'imap_port')
+            imap_port = int(imap_port_str) if imap_port_str else None
+
+        return email_address, auth_code, imap_server, imap_port
+
     def _decode_header_value(self, header_value: str) -> str:
         """
         解码邮件头部字段
@@ -118,7 +166,7 @@ class ImapEmailClient:
                 decoded_parts.append(str(content))
         return ''.join(decoded_parts)
 
-    def _get_email_body(self, msg: email.message.Message) -> Dict[str, Optional[str]]:
+    def _get_email_body(self, msg: email_message.Message) -> Dict[str, Optional[str]]:
         """
         提取邮件正文
 
