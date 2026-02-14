@@ -18,7 +18,8 @@
       "Bash(bash:*)",
       "Bash(xxd:*)",
       "Bash(tar:*)",
-      "Bash(./scripts/drawimage.sh:*)"
+      "Bash(./scripts/drawimage.sh:*)",
+      "Skill(clark:email-helper)"
     ]
   }
 }
