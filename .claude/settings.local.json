@@ -6,7 +6,19 @@
       "Bash(del:*)",
       "Bash(git commit:*)",
       "Bash(git add:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(/Users/clark/.claude/plugins/cache/clark-skills/clark/1.0.0/skills/draw/scripts/drawimage.sh:*)",
+      "Bash(ollama --version:*)",
+      "Bash(curl:*)",
+      "Bash(sudo mv:*)",
+      "Bash(sudo chmod:*)",
+      "Bash(brew list:*)",
+      "Bash(chmod:*)",
+      "Bash(bash:*)",
+      "Bash(xxd:*)",
+      "Bash(tar:*)",
+      "Bash(./scripts/drawimage.sh:*)"
     ]
   }
 }

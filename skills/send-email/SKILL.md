@@ -34,6 +34,34 @@ python send_email.py "<邮件内容>" --email your@email.com --auth-code YOUR_CO
 
 - `/send-email 记得下午3点开会`
 - `/send-email 这是一个很长的邮件内容...`
+- `/send-email 查看这张图片 --image /path/to/image.jpg`
+- `/send-email 报告内容 -i chart1.png -i chart2.png`
+
+## 添加图片和附件
+
+支持在邮件正文中嵌入图片和添加附件：
+
+**添加单张图片：**
+```bash
+python send_email.py "邮件内容" --image /path/to/image.jpg
+```
+
+**添加多张图片：**
+```bash
+python send_email.py "邮件内容" --image img1.jpg --image img2.png
+# 或使用简写
+python send_email.py "邮件内容" -i img1.jpg -i img2.png
+```
+
+**添加附件：**
+```bash
+python send_email.py "邮件内容" --attach /path/to/file.pdf
+```
+
+**HTML格式邮件 + 图片：**
+```bash
+python send_email.py "<h1>标题</h1><p>内容</p>" --image image.jpg
+```
 
 ## 错误处理
 

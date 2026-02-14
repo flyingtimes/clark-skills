@@ -10,7 +10,11 @@ import smtplib
 import sys
 import os
 from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
 import argparse
+import mimetypes
 
 try:
     import keyring
@@ -79,32 +83,113 @@ class SmtpEmailClient:
             preview += "..."
         return preview
 
-    def _create_message(self, subject: str, body: str, to_email: str = None) -> EmailMessage:
+    def _create_message(self, subject: str, body: str, to_email: str = None,
+                        images: list = None, attachments: list = None):
         """
         创建邮件消息
 
         Args:
             subject: 邮件标题
-            body: 邮件正文
+            body: 邮件正文（支持HTML）
             to_email: 收件人邮箱（默认发送给自己）
+            images: 图片路径列表，会嵌入到邮件正文中
+            attachments: 附件路径列表
 
         Returns:
-            EmailMessage对象
+            EmailMessage或MIMEMultipart对象
         """
-        msg = EmailMessage()
-        msg['Subject'] = subject
-        msg['From'] = self.email_address
-        msg['To'] = to_email or self.email_address
-        msg.set_content(body)
+        # 如果有图片或附件，使用MIMEMultipart
+        if images or attachments:
+            msg = MIMEMultipart('related')
+            msg['Subject'] = subject
+            msg['From'] = self.email_address
+            msg['To'] = to_email or self.email_address
+
+            # 处理图片嵌入
+            if images:
+                # 检查body是否包含HTML，如果不是则转换
+                body_html = body if '<' in body and '>' in body else f"<p>{body.replace(chr(10), '<br>')}</p>"
+
+                for idx, img_path in enumerate(images):
+                    if not os.path.exists(img_path):
+                        print(f"警告: 图片不存在 {img_path}")
+                        continue
+
+                    # 读取图片
+                    with open(img_path, 'rb') as f:
+                        img_data = f.read()
+
+                    # 检测图片类型
+                    img_type, _ = mimetypes.guess_type(img_path)
+                    if not img_type or not img_type.startswith('image/'):
+                        img_type = 'image/jpeg'
+
+                    subtype = img_type.split('/')[1]
+
+                    # 添加图片作为内嵌附件
+                    img_cid = f"img{idx}"
+                    msg_attachment = MIMEImage(img_data, _subtype=subtype)
+                    msg_attachment.add_header('Content-ID', f'<{img_cid}>')
+                    msg_attachment.add_header('Content-Disposition', 'inline', filename=os.path.basename(img_path))
+                    msg.attach(msg_attachment)
+
+                    # 在body中插入图片引用
+                    img_tag = f'<br><img src="cid:{img_cid}" alt="image">'
+                    body_html += img_tag
+
+                # 设置HTML正文
+                msg_alternative = MIMEMultipart('alternative')
+                msg_text = MIMEText(body, 'plain', 'utf-8')
+                msg_html = MIMEText(body_html, 'html', 'utf-8')
+                msg_alternative.attach(msg_text)
+                msg_alternative.attach(msg_html)
+                msg.attach(msg_alternative)
+
+            # 处理普通附件
+            if attachments:
+                for attach_path in attachments:
+                    if not os.path.exists(attach_path):
+                        print(f"警告: 附件不存在 {attach_path}")
+                        continue
+
+                    with open(attach_path, 'rb') as f:
+                        attach_data = f.read()
+
+                    attach_type, _ = mimetypes.guess_type(attach_path)
+                    if not attach_type:
+                        attach_type = 'application/octet-stream'
+
+                    main_type, subtype = attach_type.split('/', 1) if '/' in attach_type else ('application', 'octet-stream')
+
+                    from email.mime.base import MIMEBase
+                    import email.encoders
+
+                    part = MIMEBase(main_type, subtype)
+                    part.set_payload(attach_data)
+                    email.encoders.encode_base64(part)
+                    part.add_header('Content-Disposition', 'attachment',
+                                    filename=os.path.basename(attach_path))
+                    msg.attach(part)
+        else:
+            # 简单文本邮件
+            msg = EmailMessage()
+            msg['Subject'] = subject
+            msg['From'] = self.email_address
+            msg['To'] = to_email or self.email_address
+            msg.set_content(body)
+
         return msg
 
-    def send_email(self, body: str, to_email: str = None) -> tuple[bool, str]:
+    def send_email(self, body: str, to_email: str = None,
+                   images: list = None, attachments: list = None) -> tuple[bool, str]:
         """
         发送邮件
 
         Args:
             body: 邮件正文
             to_email: 收件人邮箱（默认发送给自己）
+            images: 图片路径列表，会嵌入到邮件正文中
+            attachments: 附件路径列表
 
         Returns:
             (是否成功, 消息)
@@ -114,7 +199,8 @@ class SmtpEmailClient:
             subject = self._generate_subject(body)
 
             # 创建邮件
-            msg = self._create_message(subject, body, to_email or self.email_address)
+            msg = self._create_message(subject, body, to_email or self.email_address,
+                                       images=images, attachments=attachments)
 
             # 连接并发送（使用SSL）
             if self.port == 465:
@@ -128,7 +214,13 @@ class SmtpEmailClient:
                     smtp.login(self.email_address, self.auth_code)
                     smtp.send_message(msg)
 
-            return True, f"邮件已发送: {subject}"
+            extra_info = ""
+            if images:
+                extra_info = f" (包含{len(images)}张图片)"
+            elif attachments:
+                extra_info = f" (包含{len(attachments)}个附件)"
+
+            return True, f"邮件已发送: {subject}{extra_info}"
 
         except smtplib.SMTPAuthenticationError:
             return False, "认证失败：请检查授权码是否正确"
@@ -147,6 +239,10 @@ def main():
     parser.add_argument('--to', help='收件人邮箱（默认发送给自己）')
     parser.add_argument('--email', help='发件人邮箱地址')
     parser.add_argument('--auth-code', help='SMTP授权码')
+    parser.add_argument('--image', '-i', action='append', dest='images',
+                        help='添加图片到邮件正文（可多次使用）')
+    parser.add_argument('--attach', '-a', action='append', dest='attachments',
+                        help='添加附件（可多次使用）')
     args = parser.parse_args()
 
     # 获取邮件内容
@@ -194,7 +290,9 @@ def main():
     # 创建客户端并发送
     client = SmtpEmailClient(email_address, auth_code, smtp_server, smtp_port)
     to_email = args.to if args.to else None
-    success, message = client.send_email(content, to_email)
+    success, message = client.send_email(content, to_email,
+                                        images=args.images,
+                                        attachments=args.attachments)
 
     if success:
         print(f"[OK] {message}")
