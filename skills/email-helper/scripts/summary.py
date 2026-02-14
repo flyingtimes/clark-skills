@@ -81,49 +81,80 @@ def generate_summary(urgent_only: bool = True, limit: int = 20) -> dict:
         subject = f"邮件综述 - {datetime.now().strftime('%Y-%m-%d %H:%M')}"
 
         body_lines = [
+            '<html><head>',
+            '<meta charset="utf-8">',
+            '<style>',
+            '  table { border-collapse: collapse; width: 100%; font-size: 14px; }',
+            '  th { background-color: #4CAF50; color: white; padding: 8px; text-align: left; }',
+            '  td { border: 1px solid #ddd; padding: 8px; }',
+            '  tr:nth-child(even) { background-color: #f2f2f2; }',
+            '  tr:hover { background-color: #ddd; }',
+            '  .stats { margin: 10px 0; padding: 10px; background-color: #f9f9f9; border-radius: 5px; }',
+            '  .category-task { color: #2196F3; }',
+            '  .category-notification { color: #4CAF50; }',
+            '  .urgency-urgent { color: #f44336; font-weight: bold; }',
+            '  .urgency-normal { color: #666; }',
+            '</style></head><body>',
             f"<h2>邮件处理综述</h2>",
+            f"<div class='stats'>",
             f"<p>生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>",
             f"<p>共 <strong>{len(emails)}</strong> 封邮件</p>",
-            "<hr>",
+            "</div>",
             ""
         ]
 
-        # 按分类分组
+        # 按分类分组统计
         tasks = [e for e in emails if e.get('category') == 'task']
         notifications = [e for e in emails if e.get('category') == 'notification']
         others = [e for e in emails if e.get('category') not in ['task', 'notification']]
 
         if tasks:
-            body_lines.append("<h3>📋 任务类邮件</h3>")
+            body_lines.append(f"<h3>📋 任务类邮件 ({len(tasks)})</h3>")
+            body_lines.append("<table><tr><th>ID</th><th>日期</th><th>发件人</th><th>标题</th><th>紧急</th></tr>")
             for email in tasks:
                 urgency_mark = "🔴" if email.get('urgency') == 'urgent' else "🟢"
-                body_lines.append(f"<p>{urgency_mark} <strong>{email['subject']}</strong></p>")
-                body_lines.append(f"<p>发件人: {email.get('from_addr', 'N/A')}</p>")
-                body_lines.append(f"<p>时间: {format_date(email.get('date_sent', ''))}</p>")
-                body = email.get('body_plain', '')
-                if body:
-                    body_lines.append(f"<p>摘要: {truncate_text(body, 200)}</p>")
-                body_lines.append("")
+                urgency_class = f"urgency-{email.get('urgency', 'normal')}"
+                body_lines.append(f"<tr>")
+                body_lines.append(f"<td>{email.get('id', 'N/A')}</td>")
+                body_lines.append(f"<td>{format_date(email.get('date_sent', ''))}</td>")
+                body_lines.append(f"<td>{truncate_text(email.get('from_addr', ''), 30)}</td>")
+                body_lines.append(f"<td>{truncate_text(email.get('subject', ''), 50)}</td>")
+                body_lines.append(f"<td class='{urgency_class}'>{urgency_mark} {email.get('urgency', '-').upper()}</td>")
+                body_lines.append(f"</tr>")
+            body_lines.append("</table>")
 
         if notifications:
-            body_lines.append("<h3>📢 通知类邮件</h3>")
+            body_lines.append(f"<h3>📢 通知类邮件 ({len(notifications)})</h3>")
+            body_lines.append("<table><tr><th>ID</th><th>日期</th><th>发件人</th><th>标题</th><th>紧急</th></tr>")
             for email in notifications:
                 urgency_mark = "🔴" if email.get('urgency') == 'urgent' else "🟢"
-                body_lines.append(f"<p>{urgency_mark} <strong>{email['subject']}</strong></p>")
-                body_lines.append(f"<p>发件人: {email.get('from_addr', 'N/A')}</p>")
-                body_lines.append(f"<p>时间: {format_date(email.get('date_sent', ''))}</p>")
-                body_lines.append("")
+                urgency_class = f"urgency-{email.get('urgency', 'normal')}"
+                body_lines.append(f"<tr>")
+                body_lines.append(f"<td>{email.get('id', 'N/A')}</td>")
+                body_lines.append(f"<td>{format_date(email.get('date_sent', ''))}</td>")
+                body_lines.append(f"<td>{truncate_text(email.get('from_addr', ''), 30)}</td>")
+                body_lines.append(f"<td>{truncate_text(email.get('subject', ''), 50)}</td>")
+                body_lines.append(f"<td class='{urgency_class}'>{urgency_mark} {email.get('urgency', '-').upper()}</td>")
+                body_lines.append(f"</tr>")
+            body_lines.append("</table>")
 
         if others:
-            body_lines.append("<h3>📂 其他邮件</h3>")
+            body_lines.append(f"<h3>📂 其他邮件 ({len(others)})</h3>")
+            body_lines.append("<table><tr><th>ID</th><th>日期</th><th>发件人</th><th>标题</th><th>分类</th></tr>")
             for email in others:
-                body_lines.append(f"<p>• {email['subject']} - {email.get('from_addr', 'N/A')}</p>")
-            body_lines.append("")
+                body_lines.append(f"<tr>")
+                body_lines.append(f"<td>{email.get('id', 'N/A')}</td>")
+                body_lines.append(f"<td>{format_date(email.get('date_sent', ''))}</td>")
+                body_lines.append(f"<td>{truncate_text(email.get('from_addr', ''), 30)}</td>")
+                body_lines.append(f"<td>{truncate_text(email.get('subject', ''), 50)}</td>")
+                body_lines.append(f"<td>{email.get('category', '未分类')}</td>")
+                body_lines.append(f"</tr>")
+            body_lines.append("</table>")
+
+        body_lines.append("<hr><p><small>由 email-helper 自动生成</small></p>")
+        body_lines.append("</body></html>")
 
         body = '\n'.join(body_lines)
-
-        # 添加页脚
-        body += f"<hr><p><small>由 email-helper 自动生成</small></p>"
 
         # 调用 send-email 脚本发送
         send_email_script = os.path.join(

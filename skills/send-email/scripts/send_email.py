@@ -78,8 +78,10 @@ class SmtpEmailClient:
         if not content or not content.strip():
             return "来自 Claude 的邮件"
 
-        preview = content.strip()[:20]
-        if len(content.strip()) > 20:
+        # 移除换行符，避免邮件头错误
+        clean_content = content.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+        preview = clean_content.strip()[:20]
+        if len(clean_content.strip()) > 20:
             preview += "..."
         return preview
 
@@ -176,7 +178,12 @@ class SmtpEmailClient:
             msg['Subject'] = subject
             msg['From'] = self.email_address
             msg['To'] = to_email or self.email_address
-            msg.set_content(body)
+
+            # 检测是否为HTML内容
+            if '<html>' in body.lower() or '<body>' in body.lower() or '<table>' in body.lower():
+                msg.set_content(body, subtype='html')
+            else:
+                msg.set_content(body)
 
         return msg
 
