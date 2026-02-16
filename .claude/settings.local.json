@@ -19,7 +19,11 @@
       "Bash(xxd:*)",
       "Bash(tar:*)",
       "Bash(./scripts/drawimage.sh:*)",
-      "Skill(clark:email-helper)"
+      "Skill(clark:email-helper)",
+      "Skill(clark:x-fetch)",
+      "Bash(/Users/clark/code/clark-skills/skills/draw/scripts/drawimage.sh:*)",
+      "mcp__browser__browser_interact",
+      "mcp__browser__browser_evaluate"
     ]
   }
 }

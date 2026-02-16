@@ -15,6 +15,7 @@
     "canvas",
     "pkm",
     "notes",
-    "email-helper"
+    "email-helper",
+    "x-fetch"
   ]
 }
