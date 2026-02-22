@@ -18,34 +18,9 @@ description: AI 影响者热门内容抓取 - 使用已登录的浏览器从 AI 
    - 如果未连接，自动激活 Blueprint MCP
    - 连接到已登录 X.com 的浏览器
 
-2. **使用浏览器获取推文链接**
-   - 访问用户主页 (https://x.com/<username>)
-   - 从页面中提取最新的 N 条推文链接
-
-3. **使用第三方 API 获取推文完整内容**
-   - fxtwitter API（优先，支持 X Article 长文章）
-   - syndication API（备用）
-
-## 使用方式
-
-### 抓取所有用户最新 5 条推文
+2. **抓取所有用户最新 5 条推文**
 ```
 /hot-twitter --all --count 5
-```
-
-### 抓取指定用户最新推文
-```
-/hot-twitter --user karpathy --count 10
-```
-
-### 抓取指定分类用户
-```
-/hot-twitter --category "AI大佬/专家" --count 5
-```
-
-### 列出所有影响者
-```
-/hot-twitter --list
 ```
 
 ## 输出格式

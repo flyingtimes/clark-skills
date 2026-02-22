@@ -29,7 +29,9 @@
       "mcp__browser__browser_snapshot",
       "mcp__browser__browser_take_screenshot",
       "mcp__browser__enable",
-      "mcp__browser__browser_navigate"
+      "mcp__browser__browser_navigate",
+      "mcp__browser__status",
+      "mcp__browser__browser_extract_content"
     ]
   }
 }
