@@ -1,6 +1,6 @@
 ---
 name: hot-twitter
-description: AI 影响者热门内容抓取 - 从 AI 领域影响者列表中抓取最新推文
+description: AI 影响者热门内容抓取 - 使用已登录的浏览器从 AI 领域影响者列表中抓取最新推文
 ---
 
 # Hot Twitter Skill
@@ -13,21 +13,18 @@ description: AI 影响者热门内容抓取 - 从 AI 领域影响者列表中抓
 
 ## 工作流程
 
-1. **读取影响者列表**
-   ```bash
-   python3 skills/hot-twitter/scripts/fetch_user_tweets.py --list
-   ```
+1. **自动检测并激活 Blueprint MCP**
+   - 检测浏览器连接状态
+   - 如果未连接，自动激活 Blueprint MCP
+   - 连接到已登录 X.com 的浏览器
 
-2. **对每个用户抓取最新推文**
-   - 使用浏览器访问用户主页
-   - 提取推文链接
-   - 使用 x-fetch 获取完整内容
+2. **使用浏览器获取推文链接**
+   - 访问用户主页 (https://x.com/<username>)
+   - 从页面中提取最新的 N 条推文链接
 
-3. **使用 x-fetch 获取推文完整内容**
-   ```bash
-   python3 skills/x-fetch/scripts/fetch_x.py "<tweet_url>"
-   ```
-
+3. **使用第三方 API 获取推文完整内容**
+   - fxtwitter API（优先，支持 X Article 长文章）
+   - syndication API（备用）
 
 ## 使用方式
 
@@ -44,6 +41,11 @@ description: AI 影响者热门内容抓取 - 从 AI 领域影响者列表中抓
 ### 抓取指定分类用户
 ```
 /hot-twitter --category "AI大佬/专家" --count 5
+```
+
+### 列出所有影响者
+```
+/hot-twitter --list
 ```
 
 ## 输出格式
@@ -71,11 +73,23 @@ description: AI 影响者热门内容抓取 - 从 AI 领域影响者列表中抓
 
 ## 依赖
 
-- requests: HTTP 请求库
-- json: JSON 处理
+- **Blueprint MCP**: 浏览器自动化（自动检测并激活）
+
+## 前置要求
+
+使用前请确保：
+1. 浏览器已登录 X.com (Twitter)
+
+## 技术说明
+
+- **推文链接获取**：通过浏览器访问用户页面，从 DOM 中提取链接（需要登录状态）
+- **推文内容获取**：通过 fxtwitter/syndication 第三方 API（无需登录）
+- **混合架构**：结合了浏览器的登录优势和 API 的速度优势
+- 技能会自动检测并激活 Blueprint MCP
 
 ## 错误处理
 
+- 浏览器未连接：自动激活 Blueprint MCP
 - 用户不存在：跳过并记录
-- API 限制：等待后重试
+- 页面加载超时：等待后重试
 - 网络错误：记录并继续下一个用户

@@ -23,7 +23,13 @@
       "Skill(clark:x-fetch)",
       "Bash(/Users/clark/code/clark-skills/skills/draw/scripts/drawimage.sh:*)",
       "mcp__browser__browser_interact",
-      "mcp__browser__browser_evaluate"
+      "mcp__browser__browser_evaluate",
+      "Skill(clark:hot-twitter)",
+      "mcp__browser__browser_tabs",
+      "mcp__browser__browser_snapshot",
+      "mcp__browser__browser_take_screenshot",
+      "mcp__browser__enable",
+      "mcp__browser__browser_navigate"
     ]
   }
 }
