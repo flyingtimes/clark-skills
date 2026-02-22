@@ -3,7 +3,7 @@
 """
 SMTP邮件发送客户端 - 给自己发送邮件
 使用授权码方式认证
-优先使用 keyring 存储凭据，降级到环境变量
+完全使用 keyring 存储凭据
 """
 
 import smtplib
@@ -15,6 +15,7 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import argparse
 import mimetypes
+from getpass import getpass
 
 try:
     import keyring
@@ -22,13 +23,52 @@ try:
 except ImportError:
     KEYRING_AVAILABLE = False
 
-try:
-    from dotenv import load_dotenv
-    DOTENV_AVAILABLE = True
-except ImportError:
-    DOTENV_AVAILABLE = False
-
 KEYRING_SERVICE = "my-claude-skills"
+
+
+def get_or_prompt_secret(key: str, prompt_name: str = None) -> str:
+    """
+    从 keyring 获取密钥，不存在则提示用户输入并存储
+
+    Args:
+        key: 密钥的键名
+        prompt_name: 提示时显示的名称（默认使用key）
+
+    Returns:
+        密钥值
+    """
+    if not KEYRING_AVAILABLE:
+        print(f"错误: keyring 模块未安装，请运行: pip install keyring")
+        sys.exit(1)
+
+    secret = keyring.get_password(KEYRING_SERVICE, key)
+
+    if secret:
+        return secret
+
+    # 密钥不存在 → 提示输入
+    display_name = prompt_name or key
+    print(f"⚠️  未找到密钥：{display_name}", file=sys.stderr)
+    print(f"请在下方输入 {display_name} 的值（输入不会显示在屏幕上）：", file=sys.stderr)
+
+    try:
+        new_secret = getpass(prompt="> ").strip()
+        if not new_secret:
+            print("输入为空，已取消。", file=sys.stderr)
+            sys.exit(1)
+
+        # 存入 keyring
+        keyring.set_password(KEYRING_SERVICE, key, new_secret)
+        print(f"✓ 已将 {display_name} 安全存储到系统密钥管理器", file=sys.stderr)
+
+        return new_secret
+
+    except KeyboardInterrupt:
+        print("\n已取消输入。", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"存储失败：{e}", file=sys.stderr)
+        sys.exit(1)
 
 
 class SmtpEmailClient:
@@ -259,21 +299,25 @@ def main():
         print("用法: python send_email.py \"邮件内容\"")
         sys.exit(1)
 
-    # 从 keyring 或环境变量读取配置（命令行参数优先）
-    email_address = args.email
-    auth_code = args.auth_code
+    # 获取邮箱地址（命令行参数优先，否则从 keyring 获取）
+    if args.email:
+        email_address = args.email
+        # 如果通过命令行提供了邮箱，保存到 keyring
+        if KEYRING_AVAILABLE:
+            keyring.set_password(KEYRING_SERVICE, 'email_address', email_address)
+    else:
+        email_address = get_or_prompt_secret('email_address', '邮箱地址')
 
-    # 如果通过命令行提供了凭据，保存到 keyring
-    if email_address and KEYRING_AVAILABLE:
-        keyring.set_password(KEYRING_SERVICE, 'email_address', email_address)
-    if not email_address and KEYRING_AVAILABLE:
-        email_address = keyring.get_password(KEYRING_SERVICE, 'email_address')
+    # 获取授权码（命令行参数优先，否则从 keyring 获取）
+    if args.auth_code:
+        auth_code = args.auth_code
+        # 如果通过命令行提供了授权码，保存到 keyring
+        if KEYRING_AVAILABLE:
+            keyring.set_password(KEYRING_SERVICE, 'auth_code', auth_code)
+    else:
+        auth_code = get_or_prompt_secret('auth_code', 'SMTP授权码')
 
-    if auth_code and KEYRING_AVAILABLE:
-        keyring.set_password(KEYRING_SERVICE, 'auth_code', auth_code)
-    if not auth_code and KEYRING_AVAILABLE:
-        auth_code = keyring.get_password(KEYRING_SERVICE, 'auth_code')
-
+    # 获取可选的 SMTP 服务器配置
     smtp_server = None
     smtp_port = None
 
@@ -281,18 +325,6 @@ def main():
         smtp_server = keyring.get_password(KEYRING_SERVICE, 'smtp_server')
         smtp_port_str = keyring.get_password(KEYRING_SERVICE, 'smtp_port')
         smtp_port = int(smtp_port) if smtp_port_str else None
-
-    if not email_address or not auth_code:
-        if KEYRING_AVAILABLE:
-            print("错误: 请先配置 keyring 凭据或使用命令行参数")
-            print(f"  命令行: python send_email.py \"内容\" --email your@email.com --auth-code YOUR_CODE")
-            print(f"  设置命令: python -c \"import keyring; keyring.set_password('{KEYRING_SERVICE}', 'email_address', 'your@email.com')\"")
-            print(f"              python -c \"import keyring; keyring.set_password('{KEYRING_SERVICE}', 'auth_code', 'your_auth_code')\"")
-        else:
-            print("错误: 请使用命令行参数或配置环境变量")
-            print(f"  命令行: python send_email.py \"内容\" --email your@email.com --auth-code YOUR_CODE")
-            print(f"  环境变量: EMAIL_ADDRESS 和 AUTH_CODE")
-        sys.exit(1)
 
     # 创建客户端并发送
     client = SmtpEmailClient(email_address, auth_code, smtp_server, smtp_port)
