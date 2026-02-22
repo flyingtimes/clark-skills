@@ -1,0 +1,209 @@
+{
+  "ai_influencers": [
+    {
+      "category": "AI大佬/专家",
+      "users": [
+        {
+          "username": "karpathy",
+          "name": "Andrej Karpathy",
+          "bio": "前 Tesla AI 总监、OpenAI 联合创始人、斯坦福博士 - I like to train large deep neural nets",
+          "url": "https://x.com/karpathy"
+        },
+        {
+          "username": "geoffreyhinton",
+          "name": "Geoffrey Hinton",
+          "bio": "深度学习之父 - deep learning",
+          "url": "https://x.com/geoffreyhinton"
+        },
+        {
+          "username": "AndrewYNg",
+          "name": "Andrew Ng (吴恩达)",
+          "bio": "Coursera 联合创始人、前百度 AI 总监、Google Brain 负责人 - #ai #machinelearning #deeplearning",
+          "url": "https://x.com/AndrewYNg"
+        },
+        {
+          "username": "jietang",
+          "name": "唐杰",
+          "bio": "清华大学教授 - Artificial General Intelligence, Large Language Model",
+          "url": "https://x.com/jietang"
+        }
+      ]
+    },
+    {
+      "category": "AI公司/实验室官方",
+      "users": [
+        {
+          "username": "OpenAI",
+          "name": "OpenAI",
+          "bio": "OpenAI 官方 - 确保AGI造福全人类",
+          "url": "https://x.com/OpenAI"
+        },
+        {
+          "username": "GoogleDeepMind",
+          "name": "Google DeepMind",
+          "bio": "致力于解决智能问题，推进科学并造福人类",
+          "url": "https://x.com/GoogleDeepMind"
+        },
+        {
+          "username": "AIatMeta",
+          "name": "AI at Meta",
+          "bio": "Meta AI - 通过开放科学与AI社区共同推动可能性边界",
+          "url": "https://x.com/AIatMeta"
+        },
+        {
+          "username": "Zai_org",
+          "name": "Z.ai",
+          "bio": "GLM 模型背后的 AI 实验室，致力于激发 AGI 发展以造福人类",
+          "url": "https://x.com/Zai_org"
+        },
+        {
+          "username": "grok",
+          "name": "Grok",
+          "bio": "Grok AI",
+          "url": "https://x.com/grok"
+        }
+      ]
+    },
+    {
+      "category": "AI工具/开发者",
+      "users": [
+        {
+          "username": "github",
+          "name": "GitHub",
+          "bio": "AI 驱动的开发者平台",
+          "url": "https://x.com/github"
+        },
+        {
+          "username": "steipete",
+          "name": "Peter Steinberger",
+          "bio": "OpenClaw 开发者 - 退休后回来玩 AI，帮助龙虾接管世界",
+          "url": "https://x.com/steipete"
+        },
+        {
+          "username": "GauzillaPro",
+          "name": "Gauzilla Pro",
+          "bio": "世界首个 AI 驱动的现实捕捉平台，使用 Gaussian Splatting 和 4D 空间智能",
+          "url": "https://x.com/GauzillaPro"
+        },
+        {
+          "username": "Prince_Canuma",
+          "name": "Prince Canuma",
+          "bio": "Apple MLX 之王，mlx-audio & mlx-vlm 创建者",
+          "url": "https://x.com/Prince_Canuma"
+        },
+        {
+          "username": "awnihannun",
+          "name": "Awni Hannun",
+          "bio": "Apple MLX 团队",
+          "url": "https://x.com/awnihannun"
+        }
+      ]
+    },
+    {
+      "category": "AI教育/内容创作者",
+      "users": [
+        {
+          "username": "robbinfan",
+          "name": "范凯说 AI",
+          "bio": "AI 自媒体、独立开发者 - JavaEye 创始人",
+          "url": "https://x.com/robbinfan"
+        },
+        {
+          "username": "wshuyi",
+          "name": "王树义",
+          "bio": "Teach AI for Science",
+          "url": "https://x.com/wshuyi"
+        },
+        {
+          "username": "AxtonLiu",
+          "name": "Axton",
+          "bio": "AI 自动化架构师 & MAPS 布道者",
+          "url": "https://x.com/AxtonLiu"
+        },
+        {
+          "username": "zstmfhy",
+          "name": "AI奶爸",
+          "bio": "万象AI实验室共创者 - 专注 AIGC 创作",
+          "url": "https://x.com/zstmfhy"
+        },
+        {
+          "username": "op7418",
+          "name": "歸藏",
+          "bio": "关注 AI、LLM、Stable Diffusion 和设计",
+          "url": "https://x.com/op7418"
+        },
+        {
+          "username": "rovvmut_",
+          "name": "Heisenberg",
+          "bio": "AI 教育者和创作者",
+          "url": "https://x.com/rovvmut_"
+        },
+        {
+          "username": "heypearlai",
+          "name": "Pearl AI",
+          "bio": "AI 创作者 - 分享 AI 工具和 cheatsheets",
+          "url": "https://x.com/heypearlai"
+        },
+        {
+          "username": "EXM7777",
+          "name": "Machina",
+          "bio": "运营 AI 驱动的代理商",
+          "url": "https://x.com/EXM7777"
+        },
+        {
+          "username": "intheworldofai",
+          "name": "World of AI",
+          "bio": "AI/ML/LLM YouTube 频道",
+          "url": "https://x.com/intheworldofai"
+        },
+        {
+          "username": "mickmumpitz",
+          "name": "Mickmumpitz",
+          "bio": "VFX 艺术家 & AI 教育者",
+          "url": "https://x.com/mickmumpitz"
+        },
+        {
+          "username": "GitHub_Daily",
+          "name": "GitHubDaily",
+          "bio": "分享 GitHub 上高质量、有趣的 AI 工具和前沿技术",
+          "url": "https://x.com/GitHub_Daily"
+        }
+      ]
+    },
+    {
+      "category": "AI应用/产品",
+      "users": [
+        {
+          "username": "aigclink",
+          "name": "AIGCLINK",
+          "bio": "致力于让每个想拥抱AI的人都能找到适合自己的AI产品",
+          "url": "https://x.com/aigclink"
+        },
+        {
+          "username": "eyishazyer",
+          "name": "Eyisha Zyer",
+          "bio": "With AI, aiming to be 10x more than just average",
+          "url": "https://x.com/eyishazyer"
+        },
+        {
+          "username": "8bit_e",
+          "name": "enigmatic_e",
+          "bio": "VFX 和 AI 驱动视频解决方案",
+          "url": "https://x.com/8bit_e"
+        },
+        {
+          "username": "servasyy_ai",
+          "name": "huangserva",
+          "bio": "古早程序员 | AI出海 | 自由职业",
+          "url": "https://x.com/servasyy_ai"
+        },
+        {
+          "username": "lijigang",
+          "name": "李继刚",
+          "bio": "Reader. Thinker. Prompter.",
+          "url": "https://x.com/lijigang"
+        }
+      ]
+    }
+  ]
+}
