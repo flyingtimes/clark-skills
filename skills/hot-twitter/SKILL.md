@@ -20,7 +20,7 @@ description: AI 影响者热门内容抓取 - 使用已登录的浏览器从 AI 
 
 2. **抓取所有用户最新 5 条推文**
 ```
-/hot-twitter --all --count 5
+python scripts/fetch_user_tweets.py --all --count 5
 ```
 
 ## 输出格式
